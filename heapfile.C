@@ -430,12 +430,17 @@ const bool HeapFileScan::matchRec(const Record & rec) const
 
     case INTEGER:
         int iattr, ifltr;                 // word-alignment problem possible
+		ifltr = atoi(filter); //added this line because I was getting 49 instead of 1. 
+		//49 is ASCII of 1. I debugged and found it was converting "1" -> 49 in this method. 
+		//It is because its converted using memcpy before a type conversion is made.
+		//used https://cplusplus.com/reference/cstdlib/atoi/ as a reference to help solve this problem
         memcpy(&iattr,
                (char *)rec.data + offset,
                length);
-        memcpy(&ifltr,
-               filter,
-               length);
+		//removed these lines because they are now unnescessary.
+        //memcpy(&ifltr,
+               //filter,
+               //length);
         diff = iattr - ifltr;
         break;
 
