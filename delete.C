@@ -66,11 +66,32 @@ if (status != OK) {
     return status;
 }
 
+//Got help from my partner implementing this portion
+void *convertedFilter = nullptr;
+
+    switch (attrDesc.attrType) {
+        case INTEGER: {
+            int *intVal = new int(atoi(attrValue));
+            convertedFilter = intVal;
+            break;
+        }
+        case FLOAT: {
+            float *floatVal = new float(atof(attrValue));
+            convertedFilter = floatVal;
+            break;
+        }
+        case STRING:
+            convertedFilter = (void *)attrValue;
+            break;
+        default:
+            return ATTRTYPEMISMATCH;
+    }
+
 //This filters for records that match the attribute and operator.
 status = scan.startScan(attrDesc.attrOffset, 
 	attrDesc.attrLen, 
 	(Datatype)type,
-	attrValue,
+	(char *)convertedFilter,
 	op);
 
 if (status != OK) {
